@@ -47,7 +47,24 @@ class ParallaxLayerComponent extends Component {
     }
 }
 
+
+
 class ParticleComponent extends Component {
   TransformComponent transform;
   LookComponent look;
+}
+
+class CollisionComponent extends Component {
+  LookComponent look;
+  EnumSet<CollisionFlags> collisionFlags;
+  
+  CollisionComponent(LookComponent look, EnumSet<CollisionFlags> collisionFlags)
+  {
+    this.look = look;
+    this.collisionFlags = collisionFlags;
+  }
+}
+
+public enum CollisionFlags {
+  PLAYER, ENEMY, PLAYERBULLET, ENEMYBULLET
 }

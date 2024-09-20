@@ -54,8 +54,8 @@ Entity CreateExplosion(PVector spawnPoint)
   for (int i = 0; i < particleTransform.length; i++)
   {
     particleLook[i] = new LookComponent(color(random(0,255), 0, 0), 20, particleTransform[i], false);
-    particleSystem.registerComponent(TransformComponent.class, particleTransform[i]);
-    particleSystem.registerComponent(LookComponent.class, particleLook[i]);
+    explosionSystem.registerComponent(TransformComponent.class, particleTransform[i]);
+    explosionSystem.registerComponent(LookComponent.class, particleLook[i]);
   }
   
   explosionSound.play();

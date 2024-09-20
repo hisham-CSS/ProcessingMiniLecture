@@ -1,4 +1,5 @@
 import processing.sound.*;
+import java.util.EnumSet;
 import java.lang.reflect.Array;
 
 //Systems that are required to build our engine
@@ -8,7 +9,7 @@ PlayerControlSystem playerControlSystem;
 
 
 AIMoveSystem aiMoveSystem;
-ParticleSystem particleSystem;
+ExplosionSystem explosionSystem;
 
 
 //Parallax Scrolling which is pretty much it's own system of backgrounds overlayed on each other to create a scrolling effect
@@ -36,7 +37,7 @@ void draw() {
     playerControlSystem.update();
     aiMoveSystem.update();
     parallaxScrollingSystem.update();
-    particleSystem.update();
+    explosionSystem.update();
     // Update systems
     movementSystem.update();
     renderSystem.update();

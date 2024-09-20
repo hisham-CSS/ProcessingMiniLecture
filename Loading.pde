@@ -8,12 +8,12 @@ void loadGame()
 {
   updateProgress(); 
   // Initialize systems
-  movementSystem = new MovementSystem();
-  updateProgress(); 
+  movementSystem = new MovementSystem(); 
   renderSystem = new RenderSystem();
-  updateProgress(); 
-  particleSystem = new ParticleSystem();
+  explosionSystem = new ExplosionSystem();
   
+  updateProgress();
+  updateProgress();
   updateProgress(); 
   
   //Create player
