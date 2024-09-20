@@ -37,7 +37,34 @@ class SystemBase {
     }
 }
 
+class CollisionSystem extends SystemBase
+{
+  void update()
+  {
+    CollisionComponent[] colliders = getComponents(CollisionComponent.class);
+   
+    for (int i = (colliders.length - 1); i > 0; i--)
+    {
+      if (colliders[i].collisionFlags.contains(colliders[i-1].collisionID))
+      {
+        println(isColliding(colliders[i].look, colliders[i-1].look));
+      }
+    }
+    
+  }
+  
+  // Check if two LookComponents (circles) are colliding
+  boolean isColliding(LookComponent a, LookComponent b) {
+      // Calculate the distance between the two circle centers
+      float distance = a.transform.position.dist(b.transform.position);
+      
+      // Sum of the radii
+      float radiusSum = a.size + b.size;
 
+      // Return true if the distance is less than or equal to the sum of the radii
+      return distance <= radiusSum;
+  }
+}
 
 
 class PlayerControlSystem {
@@ -120,15 +147,11 @@ class PlayerControlSystem {
     }
 
     void shoot() {
-        Entity bullet = new Entity();
-        TransformComponent transform = new TransformComponent(new PVector(playerTransform.position.x, playerTransform.position.y - 30), new PVector(0, -5));
-        LookComponent look = new LookComponent(color(255, 255, 255), 5, transform, true);
-        bullet.addComponent(transform);
-        bullet.addComponent(look);
-        movementSystem.registerComponent(TransformComponent.class, transform);
-        renderSystem.registerComponent(LookComponent.class, look);
+      EnumSet<CollisionFlags> flags = EnumSet.noneOf(CollisionFlags.class);
+      flags.add(CollisionFlags.ENEMY);
+      createBullet(new PVector(playerTransform.position.x, playerTransform.position.y - 30), new PVector(0, -5), flags);
         
-        shootSound.play();
+      shootSound.play();
     }
 
     void update() {

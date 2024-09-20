@@ -4,6 +4,7 @@ class Entity {
     HashMap<String, Component> myComponents = new HashMap<String, Component>();
 
     Entity() {
+        
         id = UUID.randomUUID(); 
     }
     

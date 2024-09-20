@@ -22,14 +22,12 @@ class LookComponent extends Component {
   int colour;
   float size;
   TransformComponent transform;
-  boolean collidable;
   
-  LookComponent(int colour, float size, TransformComponent transform, boolean collidable) {
+  LookComponent(int colour, float size, TransformComponent transform) {
     name = "Look";
     this.colour = colour;
     this.size = size;
     this.transform = transform;
-    this.collidable = collidable;
   }
 }
 
@@ -56,15 +54,17 @@ class ParticleComponent extends Component {
 
 class CollisionComponent extends Component {
   LookComponent look;
+  CollisionFlags collisionID;
   EnumSet<CollisionFlags> collisionFlags;
   
-  CollisionComponent(LookComponent look, EnumSet<CollisionFlags> collisionFlags)
+  CollisionComponent(LookComponent look, EnumSet<CollisionFlags> collisionFlags, CollisionFlags collisionID)
   {
     this.look = look;
     this.collisionFlags = collisionFlags;
+    this.collisionID = collisionID;
   }
 }
 
 public enum CollisionFlags {
-  PLAYER, ENEMY, PLAYERBULLET, ENEMYBULLET
+  PLAYER, PLAYERBULLET, ENEMY, ENEMYBULLET, NONE
 }

@@ -6,7 +6,7 @@ import java.lang.reflect.Array;
 RenderSystem renderSystem;
 MovementSystem movementSystem;
 PlayerControlSystem playerControlSystem;
-
+CollisionSystem collisionSystem;
 
 AIMoveSystem aiMoveSystem;
 ExplosionSystem explosionSystem;
@@ -23,27 +23,32 @@ SoundFile explosionSound;
 void setup() {
     size(800, 800, P2D);
     ellipseMode(RADIUS);
-    thread("loadGame");
+    //load audio
+    music = new SoundFile(this, "music.mp3");
+    explosionSound = new SoundFile(this, "explosion.wav");
     
-    
-    
+    Thread loadingThread = new Thread(new LoadingThread());
+    loadingThread.start();
+    //thread("loadGame");
 }
 
 void draw() {   
-  if (gameLoaded)
-  {
-    
+  if (!gameLoaded)
+  {  
+    drawLoadingAnimation();
+  }
+  else {
+    //load background music and play
+    parallaxScrollingSystem.update();
     // Update player control system first
     playerControlSystem.update();
     aiMoveSystem.update();
-    parallaxScrollingSystem.update();
+    
     explosionSystem.update();
     // Update systems
     movementSystem.update();
     renderSystem.update();
-  }
-  else {
-    drawLoadingAnimation();
+    collisionSystem.update();
   }
 }
 

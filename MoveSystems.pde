@@ -37,6 +37,7 @@ class AIMoveSystem extends SystemBase
     void update() {
       TransformComponent[] transforms = getComponents(TransformComponent.class);
         // Iterate over all AI entities (transform components) in the system
+        if (transforms == null) return;
         for (TransformComponent aiTransform : transforms) {
             if (!aiTransform.isActive) continue;  // Skip inactive AI entities
 
