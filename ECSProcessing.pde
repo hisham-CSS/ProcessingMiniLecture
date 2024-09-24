@@ -7,8 +7,14 @@ RenderSystem renderSystem;
 MovementSystem movementSystem;
 PlayerControlSystem playerControlSystem;
 CollisionSystem collisionSystem;
-
+MenuSystem menuSystem;
 AIMoveSystem aiMoveSystem;
+GameSystem gameSystem = new GameSystem();
+
+//Bullet listener for player bullet collisions
+PlayerBulletCollision playerBulletCollision = new PlayerBulletCollision();
+
+//system that spawns 8 items that slowly scale down over time
 ExplosionSystem explosionSystem;
 
 
@@ -16,40 +22,54 @@ ExplosionSystem explosionSystem;
 ParallaxScrollingSystem parallaxScrollingSystem;
 ParallaxLayerComponent[] parallaxLayers;
 
-//soundfile that is playing the background music
+//soundfile that is playing the background music and the explosion sound
 SoundFile music;
 SoundFile explosionSound;
+SoundFile shootSound;
 
 void setup() {
     size(800, 800, P2D);
-    ellipseMode(RADIUS);
-    //load audio
-    music = new SoundFile(this, "music.mp3");
-    explosionSound = new SoundFile(this, "explosion.wav");
+    //fullScreen(P2D);
+    textFont(createFont("SPACE.ttf", 64));
     
-    Thread loadingThread = new Thread(new LoadingThread());
+    ellipseMode(RADIUS);
+    
+    //load on a seperate thread so that we don't hang the application when initally loading
+    Thread loadingThread = new Thread(new LoadingThread(this));
     loadingThread.start();
-    //thread("loadGame");
 }
 
 void draw() {   
-  if (!gameLoaded)
-  {  
-    drawLoadingAnimation();
-  }
+  if (!gameLoaded) drawLoadingAnimation();
   else {
-    //load background music and play
-    parallaxScrollingSystem.update();
-    // Update player control system first
-    playerControlSystem.update();
-    aiMoveSystem.update();
-    
-    explosionSystem.update();
-    // Update systems
-    movementSystem.update();
-    renderSystem.update();
-    collisionSystem.update();
+    if (!gamePlaying)
+    {
+      //load background music and play
+      parallaxScrollingSystem.update();
+      menuSystem.updateHoverState(mouseX, mouseY);
+      menuSystem.update();
+      menuSystem.renderMenu();
+    }
+    else
+    {
+      parallaxScrollingSystem.update();
+      //update player input and AI input for the frame
+      playerControlSystem.update();
+      aiMoveSystem.update();
+      
+      //update any explosions that may be active
+      explosionSystem.update();
+      
+      //Update all entity positions, render entities then check for collisions
+      movementSystem.update();
+      renderSystem.update();
+      collisionSystem.update();
+    }
   }
+}
+
+void mousePressed() {
+    menuSystem.handleInput(true);
 }
 
 void keyPressed() {

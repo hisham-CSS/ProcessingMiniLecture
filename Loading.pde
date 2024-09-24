@@ -32,22 +32,45 @@ void updateProgress() {
 
 public class LoadingThread implements Runnable
 {
+  PApplet myApp;
+  
+  LoadingThread(PApplet myApp)
+  {
+    this.myApp = myApp;
+  }
+  
   void run()
   {
     updateProgress(); 
+
+    //load audio
+    music = new SoundFile(myApp, "music.mp3");
+    explosionSound = new SoundFile(myApp, "explosion.wav");
+    shootSound = new SoundFile(myApp, "shoot.wav");
+    
+    updateProgress();
+    
     // Initialize systems
     movementSystem = new MovementSystem(); 
     renderSystem = new RenderSystem();
     explosionSystem = new ExplosionSystem();
     collisionSystem = new CollisionSystem();
+    menuSystem = new MenuSystem();
     
     updateProgress();
-    updateProgress();
+    
+    //Create all the menus
+    createMainMenu();
+    //other function calls for the different menus to be created
+    
+    //push our main menu to the stack initially
+    menuSystem.pushMenu(menuSystem.menuObjects.get(MenuTypes.MAINMENU));
+    
     updateProgress(); 
     
     //Create player
     Entity player = createPlayer();
-    aiMoveSystem = new AIMoveSystem(player.getComponent("Transform"));
+    aiMoveSystem = new AIMoveSystem(player.getComponent(TransformComponent.class));
     updateProgress(); 
     
     //PARALLAX SECTION
@@ -56,33 +79,38 @@ public class LoadingThread implements Runnable
     PImage layer2 = loadImage("background_mid.png");  // Middle layer
     PImage layer3 = loadImage("background_mid-2.png"); // Middle Layer
     PImage layer4 = loadImage("background_near.png"); // Nearest layer
-    updateProgress(); 
+    updateProgress();
+    
     // Create parallax layers with different speeds
     parallaxLayers = new ParallaxLayerComponent[] {
-        new ParallaxLayerComponent(layer1, 1.5),
-        new ParallaxLayerComponent(layer2, 2.0),
-        new ParallaxLayerComponent(layer3, 3.0),
+        new ParallaxLayerComponent(layer1, 0.1),
+        new ParallaxLayerComponent(layer2, 1.0),
+        new ParallaxLayerComponent(layer3, 2.5),
         new ParallaxLayerComponent(layer4, 4.0)
-    };
-    updateProgress(); 
-    parallaxScrollingSystem = new ParallaxScrollingSystem(parallaxLayers, player.getComponent("Transform"));
-    
-    ////create inital wave of enemies
-    createEnemy(new PVector(100, 100));
-    createEnemy(new PVector(200, 100));
-    createEnemy(new PVector(300, 100));
-    createEnemy(new PVector(400, 100));
-    createEnemy(new PVector(500, 100));
-    createEnemy(new PVector(100, 200));
-    createEnemy(new PVector(100, 300));
-    createEnemy(new PVector(100, 400));
-    createEnemy(new PVector(100, 500));
-      
+    }; 
+    parallaxScrollingSystem = new ParallaxScrollingSystem(parallaxLayers);
     updateProgress();
-    delay(5000);
+    //PARALLAX SECTION
+    
+    //create inital wave of enemies
+    //createEnemy(new PVector(100, 100));
+    //createEnemy(new PVector(200, 100));
+    //createEnemy(new PVector(300, 100));
+    //createEnemy(new PVector(400, 100));
+    //createEnemy(new PVector(500, 100));
+    //createEnemy(new PVector(100, 200));
+    //createEnemy(new PVector(100, 300));
+    //createEnemy(new PVector(100, 400));
+    //createEnemy(new PVector(100, 500));
+      
+    
+    updateProgress();
+    delay(500);
     music.loop();
     //Global sound class with a static variable for all sound in the sketch
     Sound.volume(0.1f);
+    
+    
     
     gameLoaded = true;
   }

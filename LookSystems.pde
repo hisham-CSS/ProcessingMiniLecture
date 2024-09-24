@@ -1,3 +1,4 @@
+//Covers the creation of the player, bullets and enemies. 
 class RenderSystem extends SystemBase {
     void update() {
         LookComponent[] lookComponents = getComponents(LookComponent.class);
@@ -6,7 +7,6 @@ class RenderSystem extends SystemBase {
         // First, render the objects
         for (LookComponent look : lookComponents) {
             if (!look.isActive) continue;
-            println("render system");
             // Draw the circle
             fill(look.colour);
             ellipse(look.transform.position.x, look.transform.position.y, look.size, look.size);
@@ -17,35 +17,10 @@ class RenderSystem extends SystemBase {
                 look.isActive = false;
             }
         }
-
-        //// Then, perform collision detection between collidable objects
-        //for (int i = 0; i < lookComponents.length; i++) {
-        //    LookComponent look1 = lookComponents[i];
-        //    if (!look1.collidable || !look1.isActive) continue;
-
-        //    for (int j = i + 1; j < lookComponents.length; j++) {
-        //        LookComponent look2 = lookComponents[j];
-        //        if (!look2.collidable || !look2.isActive) continue;
-
-        //        // Check for collisions between look1 and look2
-        //        if (isColliding(look1, look2)) {
-        //            handleCollision(look1, look2);
-        //        }
-        //    }
-        //}
-    }
-
-
-
-    // Handle the collision between two LookComponents
-    void handleCollision(LookComponent a, LookComponent b) {
-        // Example: Deactivate both objects on collision (you can replace this with any other logic)
-        a.isActive = false;
-        b.isActive = false;
-        CreateExplosion(a.transform.position);
-    }
+    }    
 }
 
+//responsible for creating and managing the explosions.
 class ExplosionSystem extends SystemBase
 {
   void update()
@@ -55,8 +30,7 @@ class ExplosionSystem extends SystemBase
     if (transformComponents == null) return;
     for(int i = 0; i < transformComponents.length; i++)
     {
-      println("explosion system");
-      //if the current component isn't active - do not do anything and continue to the next element in the loop
+        //if the current component isn't active - do not do anything and continue to the next element in the loop
          if (transformComponents[i].isActive == false) continue;
          if (lookComponents[i].isActive == false) continue;
          
@@ -78,21 +52,20 @@ class ExplosionSystem extends SystemBase
   }
 }
 
+//responsible for creating and managing the parallax scrolling system
 class ParallaxScrollingSystem {
   ParallaxLayerComponent[] layerArray;
-  TransformComponent playerTransform;
   
   //inject the appropriate dependancies into the parallax system - this includes the array of parrallax components and the player transform
-  ParallaxScrollingSystem(ParallaxLayerComponent[] layerArray, TransformComponent playerTransform)
+  ParallaxScrollingSystem(ParallaxLayerComponent[] layerArray)
   {
     this.layerArray = layerArray;
-    this.playerTransform = playerTransform;
   }
   
    void update() {
      for (ParallaxLayerComponent layer : layerArray) {
-        println("scrolling layer");
-        layer.offsetY += layer.speed - (playerTransform.velocity.y / 2);
+        //println("scrolling layer");
+        layer.offsetY += layer.speed;
         
         if (layer.offsetY > layer.image.height) {
             layer.offsetY -= layer.image.height;
@@ -102,5 +75,4 @@ class ParallaxScrollingSystem {
         image(layer.image, 0, layer.offsetY - layer.image.height);
       }
     }
-  
 }

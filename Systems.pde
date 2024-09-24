@@ -1,5 +1,5 @@
 class SystemBase {
-     private HashMap<Class<?>, Component[]> componentMap = new HashMap<>();
+    private HashMap<Class<?>, Component[]> componentMap = new HashMap<>();
 
     // Registers a component of a specific type
     public <T extends Component> void registerComponent(Class<T> componentType, T component) {
@@ -37,126 +37,16 @@ class SystemBase {
     }
 }
 
-class CollisionSystem extends SystemBase
+class GameSystem
 {
-  void update()
+  int waveNumber = 0;
+  void start()
   {
-    CollisionComponent[] colliders = getComponents(CollisionComponent.class);
-   
-    for (int i = (colliders.length - 1); i > 0; i--)
-    {
-      if (colliders[i].collisionFlags.contains(colliders[i-1].collisionID))
-      {
-        println(isColliding(colliders[i].look, colliders[i-1].look));
-      }
-    }
-    
+    gamePlaying = true;
+    waveNumber++;
   }
   
-  // Check if two LookComponents (circles) are colliding
-  boolean isColliding(LookComponent a, LookComponent b) {
-      // Calculate the distance between the two circle centers
-      float distance = a.transform.position.dist(b.transform.position);
-      
-      // Sum of the radii
-      float radiusSum = a.size + b.size;
-
-      // Return true if the distance is less than or equal to the sum of the radii
-      return distance <= radiusSum;
+  void createWave()
+  {
   }
-}
-
-
-class PlayerControlSystem {
-    MovementSystem movementSystem;
-    RenderSystem renderSystem;
-    TransformComponent playerTransform;
-    float speed = 2.0;
-
-    boolean upPressed = false;
-    boolean downPressed = false;
-    boolean leftPressed = false;
-    boolean rightPressed = false;
-    
-    SoundFile shootSound;
-    
-    //Dependancy Injection
-    PlayerControlSystem(TransformComponent playerTransform, MovementSystem movementSystem, RenderSystem renderSystem, SoundFile shootSound) {
-        this.playerTransform = playerTransform;
-        this.movementSystem = movementSystem;
-        this.renderSystem = renderSystem;
-        this.shootSound = shootSound;
-    }
-
-    void keyPressed(char key) {
-        if (key == 'w' || key == 'W') {
-            upPressed = true;
-        } else if (key == 's' || key == 'S') {
-            downPressed = true;
-        } else if (key == 'a' || key == 'A') {
-            leftPressed = true;
-        } else if (key == 'd' || key == 'D') {
-            rightPressed = true;
-        } else if (key == ' ') {
-            shoot();
-        }
-
-        updateDirection();
-    }
-
-    void keyReleased(char key) {
-        if (key == 'w' || key == 'W') {
-            upPressed = false;
-        } else if (key == 's' || key == 'S') {
-            downPressed = false;
-        } else if (key == 'a' || key == 'A') {
-            leftPressed = false;
-        } else if (key == 'd' || key == 'D') {
-            rightPressed = false;
-        }
-
-        updateDirection();
-    }
-
-    private void updateDirection() {
-        float dx = 0;
-        float dy = 0;
-
-        if (upPressed) {
-            dy -= 1;
-        }
-        if (downPressed) {
-            dy += 1;
-        }
-        if (leftPressed) {
-            dx -= 1;
-        }
-        if (rightPressed) {
-            dx += 1;
-        }
-
-        setDirection(dx, dy);
-    }
-
-    void setDirection(float dx, float dy) {
-      if (playerTransform != null) {
-        PVector newVel = new PVector(dx, dy);
-        newVel.normalize();
-        PVector.mult(newVel, speed, playerTransform.velocity);
-      }
-    }
-
-    void shoot() {
-      EnumSet<CollisionFlags> flags = EnumSet.noneOf(CollisionFlags.class);
-      flags.add(CollisionFlags.ENEMY);
-      createBullet(new PVector(playerTransform.position.x, playerTransform.position.y - 30), new PVector(0, -5), flags);
-        
-      shootSound.play();
-    }
-
-    void update() {
-      if (playerTransform != null) {
-        playerTransform.position = new PVector(constrain(playerTransform.position.x, 0, width), constrain(playerTransform.position.y, 0, height));    
-      }
-    }
 }
