@@ -43,7 +43,7 @@ Entity createBullet(PVector spawnLocation, PVector velocity, EnumSet<CollisionFl
   TransformComponent transform = new TransformComponent(spawnLocation, velocity);
   LookComponent look = new LookComponent(color(255, 255, 255), 5, transform);
   CollisionComponent collision = new CollisionComponent(look, collisionFlags, CollisionFlags.PLAYERBULLET);
-  collision.addListener(playerBulletCollision);
+  collision.addListener(new BulletCollision(look));
   
   bullet.addComponent(transform)
         .addComponent(look)
@@ -136,8 +136,7 @@ class PlayerControlSystem implements CollisionEvent {
 
     void shoot() {
       EnumSet<CollisionFlags> flags = EnumSet.of(CollisionFlags.ENEMY);
-      createBullet(new PVector(playerTransform.position.x, playerTransform.position.y - 30), new PVector(0, -5), flags);
-        
+      createBullet(new PVector(playerTransform.position.x, playerTransform.position.y - 30), new PVector(0, -10), flags);
       shootSound.play();
     }
 
@@ -147,7 +146,7 @@ class PlayerControlSystem implements CollisionEvent {
       }
     }
     
-    void onCollision(CollisionComponent myCollider, CollisionComponent collidedObject)
+    void onCollision(CollisionComponent collidedObject)
     {
       //println("player collisions");
     }

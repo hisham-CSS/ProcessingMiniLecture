@@ -93,7 +93,7 @@ public class LoadingThread implements Runnable
     //PARALLAX SECTION
     
     //create inital wave of enemies
-    //createEnemy(new PVector(100, 100));
+    createEnemy(new PVector(100, 100));
     //createEnemy(new PVector(200, 100));
     //createEnemy(new PVector(300, 100));
     //createEnemy(new PVector(400, 100));

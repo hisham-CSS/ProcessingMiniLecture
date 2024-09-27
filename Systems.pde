@@ -39,14 +39,60 @@ class SystemBase {
 
 class GameSystem
 {
-  int waveNumber = 0;
+  private int waveNumber = 0;
+  private int lives = 5;
+  ArrayList<ValueChangedEvent> lifeValueListeners = new ArrayList<ValueChangedEvent>();
+  ArrayList<ValueChangedEvent> waveValueListeners = new ArrayList<ValueChangedEvent>();
+  
   void start()
   {
     gamePlaying = true;
-    waveNumber++;
+    createWave();
+   
+  }
+  
+  void AddListener(ChangeEvent eventType, ValueChangedEvent listener)
+  {
+    if (eventType == ChangeEvent.LIVES) 
+    {
+      lifeValueListeners.add(listener);
+      return;
+    }
+    waveValueListeners.add(listener);
   }
   
   void createWave()
   {
+    //update the wave number and create the wave
+    waveNumber++;
+    
+    if (waveValueListeners == null || waveValueListeners.size() <= 0) return;
+    
+    for (ValueChangedEvent evt : waveValueListeners)
+    {
+      evt.ValueChanged(waveNumber);
+    }
   }
+  
+  void setLives(int value)
+  {
+    lives = value;
+    
+    if (lifeValueListeners == null || lifeValueListeners.size() <= 0) return;
+    
+    for (ValueChangedEvent evt : lifeValueListeners)
+    {
+      evt.ValueChanged(lives);
+    }
+  }
+}
+
+enum ChangeEvent
+{
+  LIVES, WAVES
+}
+
+interface ValueChangedEvent
+{
+  void ValueChanged(int changedValue);
 }

@@ -24,7 +24,7 @@ class Menu {
 
 public enum MenuTypes
 {
-  MAINMENU, INGAME, PAUSE, GAMEOVER, DIALOG
+  MAINMENU, INGAME, PAUSE, GAMEOVER, DIALOG, SHOP
 }
 
 //***************************
@@ -183,7 +183,7 @@ class MenuSystem {
         //Add drop shadow
         for (int i = 5; i > 0; i--)
         {
-          int layerShade = baseColour - (i * color(50,100,255));
+          int layerShade = baseColour - (i * baseColour);
           fill(layerShade);
           text(text.text, text.x + i + 3, text.y + 3 + i, width, 200);
         }
@@ -239,8 +239,13 @@ void createMainMenu()
     // Create buttons and text as entities
     Entity startButtonEntity = new Entity();
     rectMode(CENTER);
+    //Add our start button.  The runnable onclick can be bound to an anon function as we aren't doing much with the buttons
+    //We don't need a whole other class that implmeents runnable to be created with just the two lines in the run function.
     ButtonComponent startButton = new ButtonComponent("Start Game", width/2, height/2, 200, 100, 20, 
-    () -> { gameSystem.start(); });
+    () -> { 
+      gameSystem.start();
+      //menuSystem.pushMenu(menuSystem.menuObjects.get(MenuTypes.INGAME));
+    });
 
     Entity exitButtonEntity = new Entity();
     ButtonComponent exitButton = new ButtonComponent("Exit", width - 120, height - 70, 200, 100, 20, () -> exit());
@@ -269,6 +274,11 @@ void createGameOverMenu()
 void createInGameMenu()
 {
   Menu inGameMenu = new Menu(MenuTypes.INGAME);
+}
+
+void createShopMenu()
+{
+  Menu shopMenu = new Menu(MenuTypes.SHOP);
 }
 
 void createDialogueMenu()

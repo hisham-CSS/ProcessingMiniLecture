@@ -11,8 +11,6 @@ MenuSystem menuSystem;
 AIMoveSystem aiMoveSystem;
 GameSystem gameSystem = new GameSystem();
 
-//Bullet listener for player bullet collisions
-PlayerBulletCollision playerBulletCollision = new PlayerBulletCollision();
 
 //system that spawns 8 items that slowly scale down over time
 ExplosionSystem explosionSystem;
@@ -41,7 +39,8 @@ void setup() {
 
 void draw() {   
   if (!gameLoaded) drawLoadingAnimation();
-  else {
+  else 
+  {
     if (!gamePlaying)
     {
       //load background music and play

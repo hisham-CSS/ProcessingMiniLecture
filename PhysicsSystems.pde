@@ -38,8 +38,8 @@ class CollisionSystem extends SystemBase
     // Handle the collision between two LookComponents
     void handleCollision(CollisionComponent a, CollisionComponent b) {
         // Example: Deactivate both objects on collision (you can replace this with any other logic)
-        a.onCollision(a, b);
-        b.onCollision(b, a);
+        a.onCollision(b);
+        b.onCollision(a);
         
         //a.isActive = false;
         //b.isActive = false;
@@ -50,7 +50,7 @@ class CollisionSystem extends SystemBase
 //INTERFACE THAT IS USED TO CREATE COLLISION EVENTS - COMPONENT RAISES THE EVENT FOR OTHERS TO LISTEN TO
 interface CollisionEvent
 {
-  void onCollision(CollisionComponent myCollider, CollisionComponent collidedObject);
+  void onCollision(CollisionComponent collidedObject);
 }
 //COLLISION FLAGS FOR THE GAME, A COLLISION COMPONENT HAS FLAGS IN WHICH IT CHECKS COLLISIONS AGAINST AS WELL AS ONE SET AS IT'S ID
 //EXAMPLE - PLAYER HAS A COLLISION ID OF PLAYER, AND COLLISION FLAGS SET TO ENEMY AND ENEMYBULLET
@@ -76,19 +76,24 @@ class CollisionComponent extends Component {
     collisionListeners.add(evt);
   }
   
-  public void onCollision(CollisionComponent myCollider, CollisionComponent collidedObject)
+  public void onCollision(CollisionComponent collidedObject)
   {
     if (collisionListeners == null || collisionListeners.size() <= 0) return;
     for (CollisionEvent e : collisionListeners)
-      e.onCollision(myCollider, collidedObject);
+      e.onCollision(collidedObject);
   }
 }
 
-class PlayerBulletCollision implements CollisionEvent
+class BulletCollision implements CollisionEvent
 {
-  void onCollision(CollisionComponent myCollider, CollisionComponent collidedObject)
+  LookComponent bulletLook;
+  BulletCollision(LookComponent bulletLook)
   {
-    myCollider.look.isActive = false;
+    this.bulletLook = bulletLook;
+  }
+  void onCollision(CollisionComponent collidedObject)
+  {
+    bulletLook.isActive = false;
     collidedObject.look.isActive = false;
     createExplosion(collidedObject.look.transform.position);
   }
